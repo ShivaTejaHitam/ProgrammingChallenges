@@ -26,16 +26,14 @@ class EnergyDrink
         
         while(energies.size()>1 && !isDescendingorequal(energies))
         {
-            int i=energies.size()-1;
-            
-            while(i>=1 && energies.size()>1)
+            for(int i=energies.size()-1;i>=1 && energies.size()>1;i--)
             {
                 if(energies.get(i)>energies.get(i-1))
                 {
                     energies.remove(i);
                 }
-                i=i-1;
             }
+            
             
             count++;
         }
