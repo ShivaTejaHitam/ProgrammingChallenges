@@ -1,81 +1,94 @@
-import java.util.*; 
-import java.lang.*; 
-import java.io.*; 
+import java.util.*;
 
 
-
-class Dijkstra
-{
-    static final int V=9;
-    int minDistance(int dist[], Boolean sptSet[]) 
-    { 
-        // Initialize min value 
-        int min = Integer.MAX_VALUE, min_index = -1; 
-  
-        for (int v = 0; v < V; v++) 
-            if (sptSet[v] == false && dist[v] <= min) { 
-                min = dist[v]; 
-                min_index = v; 
-            } 
-  
-        return min_index; 
-    } 
-
-    void printSolution(int dist[]) 
-    { 
-        System.out.println("Vertex \t\t Distance from Source"); 
-        for (int i = 0; i < V; i++) 
-            System.out.println(i + " \t\t " + dist[i]); 
-    } 
-
-
-    void dijkstra(int graph[][],int src)
-    {   
-        int dist[]=new int[V];
-
-        Boolean sptSet[]=new Boolean[V];
-
-        for(int i=0;i<V;i++)
-        {   
-            dist[i]=Integer.MAX_VALUE;
-            sptSet[i]=false;
-        }
-
-        dist[src]=0;
-
-        for(int count=0;count<V-1;count++)
-        {
-            int u=minDistance(dist,sptSet);
-
-            sptSet[u]=true;
-
-            for(int v=0;v< V ;v++)
-            {
-
-                if (!sptSet[v] && graph[u][v] != 0 && dist[u] != Integer.MAX_VALUE && dist[u] + graph[u][v] < dist[v]) 
-                    dist[v] = dist[u] + graph[u][v]; 
-            }
-
-            printSolution(dist);
-        }
-
+class findbestroute
+{   
+    static int[] convert(String s){
+        String[] str=s.split(" ");
+        int[] arr=new int[str.length];
+        
+        for(int i=0;i<arr.length;i++)
+            arr[i]=Integer.parseInt(str[i]);
+            
+        return arr;
     }
-    public static void main(String)
+    
+    static int min_index(int[] dist,boolean[] visited,int n)
     {
-        int graph[][]={ { 0, 4, 0, 0, 0, 0, 0, 8, 0 }, 
-                        { 4, 0, 8, 0, 0, 0, 0, 11, 0 }, 
-                        { 0, 8, 0, 7, 0, 4, 0, 0, 2 }, 
-                        { 0, 0, 7, 0, 9, 14, 0, 0, 0 }, 
-                        { 0, 0, 0, 9, 0, 10, 0, 0, 0 }, 
-                        { 0, 0, 4, 14, 10, 0, 2, 0, 0 }, 
-                        { 0, 0, 0, 0, 0, 2, 0, 1, 6 }, 
-                        { 8, 11, 0, 0, 0, 0, 1, 0, 7 }, 
-                        { 0, 0, 2, 0, 0, 0, 6, 7, 0 } }; 
+        int minima=Integer.MAX_VALUE;
+        int min_index=-1;
+        
+        for(int i=0;i<n;i++)
+        {
+            if(dist[i]<=minima && visited[i]==false)
+            {
+                minima=dist[i];
+                min_index=i;
+            }
+        }
+        return min_index;
+    }
+    
+    static void Dijkstra(int[][] graph,int start,int n)
+    {
+        int dist[]=new int[n];
+        boolean visited[]=new boolean[n];
+        
+        
+        for(int i=0;i<n;i++)
+        {
+            dist[i]=Integer.MAX_VALUE;
+            visited[i]=false;
+        }
+        
+        dist[start]=0;
 
-        Dijkstra t=new Dijkstra();
-        t.Dijkstra(graph,0);
-      
+        for(int i=0;i<n-1;i++)
+        {
+            int u=min_index(dist,visited,n);
+            visited[u]=true;
+            
+            for(int v=0;v<n;v++)
+            {
+                if(visited[v]==false && graph[u][v]!=0 && dist[u]+graph[u][v]<dist[v])
+                {
+                    dist[v]=dist[u]+graph[u][v];
+                }
+            }
+            
+        }
+        
+        
+        for(int i=0;i<n;i++)
+        {
+            if(i!=start)
+            {
+                System.out.println(dist[i]);
+            }
+        }
+        
+        
     }
 
-
+    public static void main(String args[])
+    {
+        Scanner sc=new Scanner(System.in);
+        int[] nm=convert(sc.nextLine());
+        int n=nm[0];
+        int m=nm[1];
+        int[][] graph=new int[n][n];
+        int start=Integer.parseInt(sc.nextLine());
+        
+        for(int i=0;i<m;i++)
+        {
+            int path[]=convert(sc.nextLine());
+            graph[path[0]-1][path[1]-1]=path[2];
+            // made a mistake here
+            graph[path[1]-1][path[0]-1]=path[2];
+        }
+        
+        // made a mistake here. called start instead of start-1
+        Dijkstra(graph,start-1,n);
+        
+    }
 }
